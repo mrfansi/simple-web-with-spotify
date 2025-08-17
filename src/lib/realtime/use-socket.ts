@@ -27,6 +27,11 @@ export function useSocket() {
       socket = io(socketUrl, {
         path: '/api/socketio',
         transports: ['polling', 'websocket'],
+        timeout: 20000,
+        reconnection: true,
+        reconnectionDelay: 1000,
+        reconnectionAttempts: 5,
+        maxReconnectionAttempts: 5,
       })
 
       socket.on('connect', () => {
@@ -34,14 +39,23 @@ export function useSocket() {
         setIsConnected(true)
       })
 
-      socket.on('disconnect', () => {
-        console.log('🔌 Disconnected from socket server')
+      socket.on('disconnect', (reason) => {
+        console.log('🔌 Disconnected from socket server:', reason)
         setIsConnected(false)
       })
 
       socket.on('connect_error', (error) => {
         console.error('❌ Socket connection error:', error)
         setIsConnected(false)
+      })
+
+      socket.on('reconnect', (attemptNumber) => {
+        console.log('🔄 Reconnected to socket server after', attemptNumber, 'attempts')
+        setIsConnected(true)
+      })
+
+      socket.on('reconnect_error', (error) => {
+        console.error('❌ Socket reconnection error:', error)
       })
     }
 
