@@ -20,13 +20,16 @@ export function useSocket() {
   const [musicSetting, setMusicSetting] = useState<MusicSetting | null>(null)
 
   useEffect(() => {
-    // Skip Socket.IO in production environment
-    if (process.env.NODE_ENV === 'production') {
-      console.log('Socket.IO disabled in production')
+    // Skip Socket.IO in production or when not running on localhost
+    const isLocalhost = typeof window !== 'undefined' && 
+      (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+    
+    if (process.env.NODE_ENV === 'production' || !isLocalhost) {
+      console.log('Socket.IO disabled - not running on localhost')
       return
     }
     
-    // Initialize socket connection
+    // Initialize socket connection (only for localhost development)
     if (!socket) {
       const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:3000'
       
