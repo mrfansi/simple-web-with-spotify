@@ -23,6 +23,7 @@
 # misc
 .DS_Store
 *.pem
+WARP.md
 
 # debug
 npm-debug.log*
