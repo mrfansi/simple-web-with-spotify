@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "node server.js",
+    "postinstall": "prisma generate",
     "dev:next": "next dev --turbopack",
     "build": "next build",
     "start": "NODE_ENV=production node server.js",
