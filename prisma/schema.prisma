@@ -1,0 +1,42 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model SpotifyToken {
+  id           Int      @id @default(1)
+  accessToken  String?
+  refreshToken String?
+  expiresAt    DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("spotify_tokens")
+}
+
+model MusicSetting {
+  id        Int       @id @default(1)
+  type      MusicType?
+  uri       String?   // spotify:track:..., spotify:playlist:..., spotify:album:...
+  autoplay  Boolean   @default(true)
+  loop      Boolean   @default(false)
+  updatedAt DateTime  @updatedAt
+
+  @@map("music_settings")
+}
+
+enum MusicType {
+  TRACK
+  PLAYLIST
+  ALBUM
+}
