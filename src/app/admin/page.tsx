@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { Suspense, useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { Search, Play, Pause, Volume2, VolumeX, ExternalLink, Music } from 'lucide-react'
+import Image from 'next/image'
+import { Search, ExternalLink, Music } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -34,7 +35,7 @@ interface MusicSetting {
   updatedAt: string
 }
 
-export default function AdminPage() {
+function AdminPageContent() {
   const searchParams = useSearchParams()
   const [isConnected, setIsConnected] = useState<boolean | null>(null)
   const [currentSetting, setCurrentSetting] = useState<MusicSetting | null>(null)
@@ -104,7 +105,7 @@ export default function AdminPage() {
       } else {
         toast.error('Search failed')
       }
-    } catch (error) {
+    } catch {
       toast.error('Search failed')
     }
     setIsSearching(false)
@@ -131,7 +132,7 @@ export default function AdminPage() {
       } else {
         toast.error('Failed to select item')
       }
-    } catch (error) {
+    } catch {
       toast.error('Failed to select item')
     }
     setIsUpdating(false)
@@ -159,7 +160,7 @@ export default function AdminPage() {
       } else {
         toast.error('Failed to update setting')
       }
-    } catch (error) {
+    } catch {
       toast.error('Failed to update setting')
     }
   }
@@ -295,7 +296,7 @@ export default function AdminPage() {
               <CardTitle>Search Music</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <Tabs value={searchType} onValueChange={(value) => setSearchType(value as any)}>
+              <Tabs value={searchType} onValueChange={(value) => setSearchType(value as 'track' | 'playlist' | 'album')}>
                 <TabsList>
                   <TabsTrigger value="track">Tracks</TabsTrigger>
                   <TabsTrigger value="playlist">Playlists</TabsTrigger>
@@ -328,9 +329,11 @@ export default function AdminPage() {
                           className="flex items-center space-x-4 p-4 border rounded-lg hover:bg-muted/50"
                         >
                           {item.image && (
-                            <img
+                            <Image
                               src={item.image}
                               alt={item.name}
+                              width={64}
+                              height={64}
                               className="w-16 h-16 rounded object-cover"
                             />
                           )}
@@ -360,7 +363,7 @@ export default function AdminPage() {
                   ) : searchQuery && !isSearching ? (
                     <Alert>
                       <AlertDescription>
-                        No {searchType}s found for "{searchQuery}". Try different search terms.
+                        No {searchType}s found for &quot;{searchQuery}&quot;. Try different search terms.
                       </AlertDescription>
                     </Alert>
                   ) : null}
@@ -371,5 +374,24 @@ export default function AdminPage() {
         </>
       )}
     </div>
+  )
+}
+
+export default function AdminPage() {
+  return (
+    <Suspense fallback={
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Music Settings</h1>
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+        <div className="grid gap-4">
+          <div className="h-32 w-full bg-muted animate-pulse rounded" />
+          <div className="h-64 w-full bg-muted animate-pulse rounded" />
+        </div>
+      </div>
+    }>
+      <AdminPageContent />
+    </Suspense>
   )
 }

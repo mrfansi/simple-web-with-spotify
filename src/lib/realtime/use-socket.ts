@@ -31,7 +31,6 @@ export function useSocket() {
         reconnection: true,
         reconnectionDelay: 1000,
         reconnectionAttempts: 5,
-        maxReconnectionAttempts: 5,
       })
 
       socket.on('connect', () => {

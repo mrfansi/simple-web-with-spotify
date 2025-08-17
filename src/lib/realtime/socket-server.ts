@@ -1,9 +1,14 @@
 import { Server as IOServer } from 'socket.io'
 
+// Define global interface extension
+declare global {
+  var io: IOServer | undefined
+}
+
 // Get the global Socket.IO instance from custom server
 function getGlobalSocketServer(): IOServer | null {
-  if (typeof globalThis !== 'undefined' && (globalThis as any).io) {
-    return (globalThis as any).io
+  if (typeof globalThis !== 'undefined' && globalThis.io) {
+    return globalThis.io
   }
   return null
 }

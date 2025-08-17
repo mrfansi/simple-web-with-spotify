@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Play, Pause, Volume2, VolumeX, X, Music, Minimize2 } from 'lucide-react'
+import { Volume2, VolumeX, X, Music, Minimize2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { useRealtimeMusicSetting } from '@/lib/realtime/use-socket'

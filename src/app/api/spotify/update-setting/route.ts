@@ -96,7 +96,7 @@ export async function POST(request: NextRequest) {
 }
 
 // Allow CORS for client-side requests
-export async function OPTIONS(_request: NextRequest) {
+export async function OPTIONS() {
   return new Response(null, {
     status: 200,
     headers: {

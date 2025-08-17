@@ -32,13 +32,23 @@ export async function GET(request: NextRequest) {
     const results = await searchSpotify(query, type, limit)
     
     // Transform results to simplified format
-    const transformedResults: SimpleSpotifyItem[] = results.map((item: SpotifyTrack | SpotifyPlaylist | SpotifyAlbum) => {
+    const transformedResults: SimpleSpotifyItem[] = results.map((item) => {
+      // Get image URL based on item type
+      let imageUrl: string | undefined
+      if (type === 'track') {
+        imageUrl = (item as SpotifyTrack).album?.images?.[0]?.url
+      } else if (type === 'playlist') {
+        imageUrl = (item as SpotifyPlaylist).images?.[0]?.url
+      } else if (type === 'album') {
+        imageUrl = (item as SpotifyAlbum).images?.[0]?.url
+      }
+      
       const baseItem: SimpleSpotifyItem = {
         id: item.id,
         name: item.name,
         uri: item.uri,
         type: type,
-        image: item.images?.[0]?.url || undefined,
+        image: imageUrl,
       }
       
       // Add type-specific fields

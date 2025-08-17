@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { getMusicSetting } from '@/lib/db/utils'
 import { getSpotifyEmbedUrl } from '@/lib/spotify/client'
 
-export async function GET(_request: NextRequest) {
+export async function GET() {
   try {
     const musicSetting = await getMusicSetting()
     
@@ -51,7 +51,7 @@ export async function GET(_request: NextRequest) {
 }
 
 // Allow CORS for client-side requests
-export async function OPTIONS(_request: NextRequest) {
+export async function OPTIONS() {
   return new Response(null, {
     status: 200,
     headers: {

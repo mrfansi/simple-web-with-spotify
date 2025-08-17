@@ -1,7 +1,7 @@
-import { NextRequest } from 'next/server'
+// Socket.IO route handler
 
 // This is a custom handler to initialize Socket.IO with Next.js
-export async function GET(_req: NextRequest) {
+export async function GET() {
   // In production, this endpoint should not be accessible
   if (process.env.NODE_ENV === 'production') {
     return new Response('Not Found', { status: 404 })
