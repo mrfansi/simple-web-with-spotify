@@ -3,9 +3,14 @@ import { prisma } from './prisma'
 
 // SpotifyToken utilities
 export async function getSpotifyToken() {
-  return await prisma.spotifyToken.findUnique({
-    where: { id: 1 }
-  })
+  try {
+    return await prisma.spotifyToken.findUnique({
+      where: { id: 1 }
+    })
+  } catch (error) {
+    console.warn('Database not available:', error)
+    return null
+  }
 }
 
 export async function saveSpotifyTokens({
@@ -19,32 +24,42 @@ export async function saveSpotifyTokens({
 }) {
   const expiresAt = new Date(Date.now() + (expiresIn * 1000))
   
-  return await prisma.spotifyToken.upsert({
-    where: { id: 1 },
-    update: {
-      accessToken,
-      refreshToken,
-      expiresAt,
-    },
-    create: {
-      id: 1,
-      accessToken,
-      refreshToken,
-      expiresAt,
-    }
-  })
+  try {
+    return await prisma.spotifyToken.upsert({
+      where: { id: 1 },
+      update: {
+        accessToken,
+        refreshToken,
+        expiresAt,
+      },
+      create: {
+        id: 1,
+        accessToken,
+        refreshToken,
+        expiresAt,
+      }
+    })
+  } catch (error) {
+    console.warn('Database not available, tokens not persisted:', error)
+    return null
+  }
 }
 
 export async function updateSpotifyAccessToken(accessToken: string, expiresIn: number) {
   const expiresAt = new Date(Date.now() + (expiresIn * 1000))
   
-  return await prisma.spotifyToken.update({
-    where: { id: 1 },
-    data: {
-      accessToken,
-      expiresAt,
-    }
-  })
+  try {
+    return await prisma.spotifyToken.update({
+      where: { id: 1 },
+      data: {
+        accessToken,
+        expiresAt,
+      }
+    })
+  } catch (error) {
+    console.warn('Database not available, token update failed:', error)
+    return null
+  }
 }
 
 export async function isSpotifyTokenValid() {
@@ -61,9 +76,14 @@ export async function isSpotifyTokenValid() {
 
 // MusicSetting utilities
 export async function getMusicSetting() {
-  return await prisma.musicSetting.findUnique({
-    where: { id: 1 }
-  })
+  try {
+    return await prisma.musicSetting.findUnique({
+      where: { id: 1 }
+    })
+  } catch (error) {
+    console.warn('Database not available:', error)
+    return null
+  }
 }
 
 export async function updateMusicSetting({
@@ -77,22 +97,27 @@ export async function updateMusicSetting({
   autoplay?: boolean
   loop?: boolean
 }) {
-  return await prisma.musicSetting.upsert({
-    where: { id: 1 },
-    update: {
-      type,
-      uri,
-      ...(autoplay !== undefined && { autoplay }),
-      ...(loop !== undefined && { loop }),
-    },
-    create: {
-      id: 1,
-      type,
-      uri,
-      autoplay: autoplay ?? true,
-      loop: loop ?? false,
-    }
-  })
+  try {
+    return await prisma.musicSetting.upsert({
+      where: { id: 1 },
+      update: {
+        type,
+        uri,
+        ...(autoplay !== undefined && { autoplay }),
+        ...(loop !== undefined && { loop }),
+      },
+      create: {
+        id: 1,
+        type,
+        uri,
+        autoplay: autoplay ?? true,
+        loop: loop ?? false,
+      }
+    })
+  } catch (error) {
+    console.warn('Database not available, music setting not persisted:', error)
+    return null
+  }
 }
 
 export async function updatePlaybackSettings({
@@ -102,11 +127,16 @@ export async function updatePlaybackSettings({
   autoplay?: boolean
   loop?: boolean
 }) {
-  return await prisma.musicSetting.update({
-    where: { id: 1 },
-    data: {
-      ...(autoplay !== undefined && { autoplay }),
-      ...(loop !== undefined && { loop }),
-    }
-  })
+  try {
+    return await prisma.musicSetting.update({
+      where: { id: 1 },
+      data: {
+        ...(autoplay !== undefined && { autoplay }),
+        ...(loop !== undefined && { loop }),
+      }
+    })
+  } catch (error) {
+    console.warn('Database not available, playback settings not updated:', error)
+    return null
+  }
 }

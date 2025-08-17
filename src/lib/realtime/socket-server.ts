@@ -19,6 +19,12 @@ export function getSocketServer(): IOServer | null {
 
 // Emit events to specific rooms
 export function emitToRoom(room: string, event: string, data: unknown) {
+  // Skip socket emissions in production
+  if (process.env.NODE_ENV === 'production') {
+    console.log('📡 Socket emission skipped in production:', event, data)
+    return
+  }
+  
   const io = getGlobalSocketServer()
   if (io) {
     io.to(room).emit(event, data)
@@ -35,6 +41,12 @@ export function emitMusicUpdate(data: unknown) {
 
 // Emit events to all connected clients
 export function emitGlobal(event: string, data: unknown) {
+  // Skip socket emissions in production
+  if (process.env.NODE_ENV === 'production') {
+    console.log('📡 Global socket emission skipped in production:', event, data)
+    return
+  }
+  
   const io = getGlobalSocketServer()
   if (io) {
     io.emit(event, data)

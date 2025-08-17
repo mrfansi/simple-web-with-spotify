@@ -20,6 +20,12 @@ export function useSocket() {
   const [musicSetting, setMusicSetting] = useState<MusicSetting | null>(null)
 
   useEffect(() => {
+    // Skip Socket.IO in production environment
+    if (process.env.NODE_ENV === 'production') {
+      console.log('Socket.IO disabled in production')
+      return
+    }
+    
     // Initialize socket connection
     if (!socket) {
       const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:3000'

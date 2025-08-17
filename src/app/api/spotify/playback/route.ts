@@ -7,10 +7,13 @@ export async function GET() {
     const musicSetting = await getMusicSetting()
     
     if (!musicSetting) {
-      return NextResponse.json({ 
-        error: 'No music setting found',
-        code: 'NO_SETTING' 
-      }, { status: 404 })
+      // Return default empty state when no database or setting
+      return NextResponse.json({
+        hasMusic: false,
+        autoplay: true,
+        loop: false,
+        updatedAt: new Date().toISOString(),
+      })
     }
     
     // If no music is configured, return empty state

@@ -54,15 +54,15 @@ export async function POST(request: NextRequest) {
       console.error('❌ Failed to generate embed URL:', error)
     }
     
-    // Prepare response data
+    // Prepare response data (handle case where database is not available)
     const responseData = {
       hasMusic: true,
-      type: updatedSetting.type?.toLowerCase(),
-      uri: updatedSetting.uri,
+      type: type.toLowerCase(),
+      uri: uri,
       embedUrl,
-      autoplay: updatedSetting.autoplay,
-      loop: updatedSetting.loop,
-      updatedAt: updatedSetting.updatedAt.toISOString(),
+      autoplay: autoplay ?? true,
+      loop: loop ?? false,
+      updatedAt: updatedSetting?.updatedAt?.toISOString() ?? new Date().toISOString(),
     }
     
     // Emit socket event for real-time updates
@@ -74,10 +74,10 @@ export async function POST(request: NextRequest) {
     }
     
     console.log('✅ Music setting updated:', {
-      type: updatedSetting.type,
-      uri: updatedSetting.uri,
-      autoplay: updatedSetting.autoplay,
-      loop: updatedSetting.loop
+      type: type,
+      uri: uri,
+      autoplay: autoplay ?? true,
+      loop: loop ?? false
     })
     
     return NextResponse.json({
