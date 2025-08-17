@@ -7,24 +7,32 @@ A modern web application built with **Next.js 15** featuring Spotify music integ
 - **🎵 Floating Spotify Player**: Always visible music player in bottom-right corner
 - **👨‍💼 Admin Dashboard**: Centralized control for music selection and settings
 - **🎼 Multi-format Support**: Play tracks, playlists, and albums
-- **⚡ Real-time Sync**: Settings changes instantly reflected across all pages
+- **⚡ Real-time Sync**: Settings changes instantly reflected across all pages using Supabase Realtime
 - **🔐 Single Authorization**: One-time Spotify OAuth setup for entire application
 - **🎛️ Playback Controls**: Autoplay and looping configuration
+- **☁️ Cloud Database**: PostgreSQL database powered by Supabase
+- **🔄 Real-time Features**: Database subscriptions for instant updates
 
 ## 🚀 Tech Stack
 
 - **Framework**: Next.js 15 with App Router
 - **Styling**: Tailwind CSS v4 + shadcn/ui components  
-- **Database**: SQLite with Prisma ORM
-- **Real-time**: Socket.IO
+- **Database**: PostgreSQL with Supabase & Prisma ORM
+- **Real-time**: Supabase Realtime subscriptions
 - **Music API**: Spotify Web API
 - **TypeScript**: Full type safety
 - **Development**: Turbopack for fast HMR
+- **Storage**: Supabase Storage (for future features)
 
 ## 📦 Prerequisites
 
 1. **Node.js 18+** installed
-2. **Spotify Developer Account**: 
+2. **Supabase Project**: 
+   - Go to [Supabase](https://supabase.com/)
+   - Create a new project
+   - Note your project URL, anon key, and service role key
+   - Enable Realtime for your database
+3. **Spotify Developer Account**: 
    - Go to [Spotify Developer Dashboard](https://developer.spotify.com/dashboard)
    - Create a new application
    - Note your `Client ID` and `Client Secret`
@@ -121,16 +129,21 @@ app.prepare().then(() => {
 Make sure to configure these environment variables in your production environment:
 
 ```bash
-# Database (Production)
-DATABASE_URL="file:./prod.db"  # or your production database URL
-
 # Spotify Configuration (Production)
 SPOTIFY_CLIENT_ID="your_production_client_id"
 SPOTIFY_CLIENT_SECRET="your_production_client_secret"
 SPOTIFY_REDIRECT_URI="https://yourdomain.com/api/spotify/callback"
 
-# Real-time Communication (Production)
-NEXT_PUBLIC_SOCKET_URL="https://yourdomain.com"
+# Supabase Configuration (Production)
+NEXT_PUBLIC_SUPABASE_URL="https://your-project-id.supabase.co"
+NEXT_PUBLIC_SUPABASE_ANON_KEY="your_supabase_anon_key"
+SUPABASE_SERVICE_ROLE_KEY="your_supabase_service_role_key"
+SUPABASE_JWT_SECRET="your_supabase_jwt_secret"
+
+# Database Connection Strings
+POSTGRES_PRISMA_URL="your_postgres_pooled_connection_string"
+POSTGRES_URL_NON_POOLING="your_postgres_direct_connection_string"
+DATABASE_URL="your_postgres_direct_connection_string"
 
 # Security
 NEXTAUTH_SECRET="your-production-super-secret-jwt-key"
@@ -160,7 +173,7 @@ NEXTAUTH_SECRET="your-production-super-secret-jwt-key"
 1. **Configure environment variables** in your platform's dashboard
 2. **Build command**: `npm run build`
 3. **Start command**: `npm run start`
-4. **Ensure SQLite support** or configure PostgreSQL/MySQL
+4. **Supabase is already configured** - no additional database setup needed
 
 #### Self-hosted (VPS/Docker)
 
@@ -202,29 +215,33 @@ NEXTAUTH_SECRET="your-production-super-secret-jwt-key"
 
 ### Common Issues
 
-1. **Socket.IO Connection Issues**:
-   - Ensure `NEXT_PUBLIC_SOCKET_URL` matches your domain
-   - Check firewall settings for WebSocket connections
+1. **Supabase Realtime Connection Issues**:
+   - Verify `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   - Check that Realtime is enabled in your Supabase project
+   - Ensure proper table permissions for realtime subscriptions
 
 2. **Spotify OAuth Errors**:
    - Verify redirect URIs in Spotify Dashboard
    - Check client ID and secret are correctly set
    - Ensure HTTPS in production
 
-3. **Database Issues**:
+3. **Database Connection Issues**:
    - Run `npx prisma migrate deploy` in production
-   - For PostgreSQL/MySQL, update `DATABASE_URL` accordingly
+   - Verify PostgreSQL connection strings are correct
+   - Check Supabase project status and connection pooling settings
 
 4. **Build Errors**:
    - Clear `.next` folder: `rm -rf .next`
    - Reinstall dependencies: `rm -rf node_modules && npm install`
+   - Regenerate Prisma client: `npx prisma generate`
 
 ### Performance Tips
 
 - Enable caching for API routes
 - Use CDN for static assets
-- Consider upgrading to PostgreSQL for better performance
-- Monitor Socket.IO connection limits
+- Monitor Supabase connection limits and usage
+- Use connection pooling for database connections
+- Optimize realtime subscription channels
 
 ## 📚 API Reference
 
@@ -236,10 +253,11 @@ NEXTAUTH_SECRET="your-production-super-secret-jwt-key"
 - `GET /api/spotify/playback` - Get current settings
 - `POST /api/spotify/update-setting` - Update music settings
 
-### WebSocket Events
+### Supabase Realtime Events
 
-- `setting:update` - Emitted when music settings change
-- `connection` - Client connected to real-time updates
+- `postgres_changes` - Database table changes (INSERT, UPDATE, DELETE)
+- Automatic subscription to `music_settings` table changes
+- Real-time UI updates when music settings are modified
 
 ## 🤝 Contributing
 
@@ -259,4 +277,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - [Spotify Web API](https://developer.spotify.com/documentation/web-api/) for music integration
 - [Prisma](https://prisma.io) for database management
 - [shadcn/ui](https://ui.shadcn.com) for beautiful UI components
-- [Socket.IO](https://socket.io) for real-time communication
+- [Supabase](https://supabase.com) for database and real-time subscriptions

@@ -14,7 +14,8 @@ const nextConfig: NextConfig = {
         ]
       }
     ]
-  }
+  },
+  allowedDevOrigins: ['simple-web-with-spotify.test']
 };
 
 export default nextConfig;

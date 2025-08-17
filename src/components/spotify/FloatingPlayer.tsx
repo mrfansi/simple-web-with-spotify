@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { Volume2, VolumeX, X, Music, Minimize2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { useRealtimeMusicSetting } from '@/lib/realtime/use-socket'
+import { useRealtimeMusicSetting } from '@/lib/realtime/use-supabase-realtime'
 
 interface FloatingPlayerProps {
   className?: string

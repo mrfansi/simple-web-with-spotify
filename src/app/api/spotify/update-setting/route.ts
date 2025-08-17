@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { updateMusicSetting } from '@/lib/db/utils'
 import { getSpotifyEmbedUrl } from '@/lib/spotify/client'
-import { emitMusicUpdate } from '@/lib/realtime/socket-server'
+// Socket.io removed - using Supabase Realtime instead
 import { MusicType } from '@prisma/client'
 import { z } from 'zod'
 
@@ -65,13 +65,8 @@ export async function POST(request: NextRequest) {
       updatedAt: updatedSetting?.updatedAt?.toISOString() ?? new Date().toISOString(),
     }
     
-    // Emit socket event for real-time updates
-    try {
-      emitMusicUpdate(responseData)
-    } catch (error) {
-      console.warn('⚠️ Failed to emit socket update:', error)
-      // Don't fail the request if socket emit fails
-    }
+    // Real-time updates are now handled automatically by Supabase Realtime
+    // when database records are updated via Prisma
     
     console.log('✅ Music setting updated:', {
       type: type,

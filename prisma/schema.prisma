@@ -9,12 +9,13 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING") // Used for migrations
 }
 
 model SpotifyToken {
-  id           Int      @id @default(1)
+  id           Int      @id @default(autoincrement())
   accessToken  String?
   refreshToken String?
   expiresAt    DateTime?
@@ -22,10 +23,11 @@ model SpotifyToken {
   updatedAt    DateTime @updatedAt
 
   @@map("spotify_tokens")
+  @@index([expiresAt])
 }
 
 model MusicSetting {
-  id        Int       @id @default(1)
+  id        Int       @id @default(autoincrement())
   type      MusicType?
   uri       String?   // spotify:track:..., spotify:playlist:..., spotify:album:...
   autoplay  Boolean   @default(true)
@@ -33,6 +35,7 @@ model MusicSetting {
   updatedAt DateTime  @updatedAt
 
   @@map("music_settings")
+  @@index([updatedAt])
 }
 
 enum MusicType {
